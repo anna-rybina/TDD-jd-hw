@@ -50,4 +50,27 @@ public class PhoneBookTest {
         String result = phoneBook.findByNumber("1234567890");
         assertNull(result);
     }
+
+    @Test
+    public void testFindByNameExisting() {
+        PhoneBook phoneBook = new PhoneBook();
+        phoneBook.add("Аня", "1234567890");
+        String result = phoneBook.findByName("Аня");
+        assertEquals("1234567890", result);
+    }
+
+    @Test
+    public void testFindByNameNonExisting() {
+        PhoneBook phoneBook = new PhoneBook();
+        phoneBook.add("Аня", "1234567890");
+        String result = phoneBook.findByName("Слава");
+        assertNull(result);
+    }
+
+    @Test
+    public void testFindByNameEmptyBook() {
+        PhoneBook phoneBook = new PhoneBook();
+        String result = phoneBook.findByName("Аня");
+        assertNull(result);
+    }
 }

@@ -35,6 +35,8 @@ public class PhoneBook {
     }
 
     public void printAllNames() {
-
+        for (String name : sortedNames) {
+            System.out.println(name);
+        }
     }
 }

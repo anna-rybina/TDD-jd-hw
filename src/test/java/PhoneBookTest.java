@@ -1,6 +1,12 @@
 import com.github.annarybina.PhoneBook;
 
 import org.junit.jupiter.api.Test;
+
+import java.io.ByteArrayOutputStream;
+import java.io.PrintStream;
+import java.util.Arrays;
+import java.util.List;
+
 import static org.junit.jupiter.api.Assertions.*;
 
 public class PhoneBookTest {
@@ -72,5 +78,49 @@ public class PhoneBookTest {
         PhoneBook phoneBook = new PhoneBook();
         String result = phoneBook.findByName("Аня");
         assertNull(result);
+    }
+
+    @Test
+    public void testPrintAllNamesSingleContact() {
+        PhoneBook phoneBook = new PhoneBook();
+        phoneBook.add("Аня", "1234567890");
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        phoneBook.printAllNames();
+
+        String output = outContent.toString().trim();
+        assertEquals("Аня", output);
+    }
+
+    @Test
+    public void testPrintAllNamesMultipleContacts() {
+        PhoneBook phoneBook = new PhoneBook();
+        phoneBook.add("Мия", "3333333333");
+        phoneBook.add("Аня", "1111111111");
+        phoneBook.add("Слава", "2222222222");
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        phoneBook.printAllNames();
+
+        String output = outContent.toString().trim();
+        List<String> names = Arrays.asList(output.split("\n"));
+        assertEquals(Arrays.asList("Аня", "Слава", "Мия"), names);
+    }
+
+    @Test
+    public void testPrintAllNamesEmptyBook() {
+        PhoneBook phoneBook = new PhoneBook();
+
+        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
+        System.setOut(new PrintStream(outContent));
+
+        phoneBook.printAllNames();
+
+        String output = outContent.toString().trim();
+        assertEquals("", output);
     }
 }

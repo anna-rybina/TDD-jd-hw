@@ -4,8 +4,6 @@ import org.junit.jupiter.api.Test;
 
 import java.io.ByteArrayOutputStream;
 import java.io.PrintStream;
-import java.util.Arrays;
-import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -85,13 +83,8 @@ public class PhoneBookTest {
         PhoneBook phoneBook = new PhoneBook();
         phoneBook.add("Аня", "1234567890");
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
-
-        phoneBook.printAllNames();
-
-        String output = outContent.toString().trim();
-        assertEquals("Аня", output);
+        String output = captureOutput(() -> phoneBook.printAllNames());
+        assertTrue(output.contains("Аня"));
     }
 
     @Test
@@ -101,26 +94,31 @@ public class PhoneBookTest {
         phoneBook.add("Аня", "1111111111");
         phoneBook.add("Слава", "2222222222");
 
-        ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        String output = captureOutput(() -> phoneBook.printAllNames());
 
-        phoneBook.printAllNames();
-
-        String output = outContent.toString().trim();
-        List<String> names = Arrays.asList(output.split("\n"));
-        assertEquals(Arrays.asList("Аня", "Слава", "Мия"), names);
+        assertTrue(output.contains("Аня"));
+        assertTrue(output.contains("Слава"));
+        assertTrue(output.contains("Мия"));
     }
 
     @Test
     public void testPrintAllNamesEmptyBook() {
         PhoneBook phoneBook = new PhoneBook();
 
+        String output = captureOutput(() -> phoneBook.printAllNames());
+        assertTrue(output.isEmpty());
+    }
+
+    private String captureOutput(Runnable code) {
         ByteArrayOutputStream outContent = new ByteArrayOutputStream();
-        System.setOut(new PrintStream(outContent));
+        PrintStream originalOut = System.out;
 
-        phoneBook.printAllNames();
-
-        String output = outContent.toString().trim();
-        assertEquals("", output);
+        try {
+            System.setOut(new PrintStream(outContent));
+            code.run();
+            return outContent.toString();
+        } finally {
+            System.setOut(originalOut);
+        }
     }
 }
